@@ -64,8 +64,17 @@ export function initializeAudimaxInteractions(root: ParentNode = document) {
     if (!item) return;
 
     const isOpen = item.classList.contains("open");
-    root.querySelectorAll<HTMLElement>(".faq-item").forEach((faqItem) => faqItem.classList.remove("open"));
-    if (!isOpen) item.classList.add("open");
+    root.querySelectorAll<HTMLElement>(".faq-item").forEach((faqItem) => {
+      faqItem.classList.remove("open");
+      faqItem.querySelector<HTMLElement>(".faq-q")?.setAttribute("aria-expanded", "false");
+      faqItem.querySelector<HTMLElement>(".faq-a")?.setAttribute("hidden", "");
+    });
+
+    if (!isOpen) {
+      item.classList.add("open");
+      question.setAttribute("aria-expanded", "true");
+      item.querySelector<HTMLElement>(".faq-a")?.removeAttribute("hidden");
+    }
   };
 
   faqButtons.forEach((button) => button.addEventListener("click", onFaqClick));
