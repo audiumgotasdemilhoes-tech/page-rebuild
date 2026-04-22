@@ -1,0 +1,78 @@
+export function initializeAudimaxInteractions(root: ParentNode = document) {
+  const months = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+  ];
+
+  const today = new Date();
+  const formattedDate = `${today.getDate()} de ${months[today.getMonth()]} de ${today.getFullYear()}`;
+  root.querySelectorAll<HTMLElement>("#topdate").forEach((element) => {
+    element.textContent = formattedDate;
+  });
+
+  const units = String(Math.floor(Math.random() * 7) + 13);
+  root.querySelectorAll<HTMLElement>("#units,#units2").forEach((element) => {
+    element.textContent = units;
+  });
+
+  let total = 7200 + Math.floor(Math.random() * 1800);
+  const setTimerText = (id: string, value: number) => {
+    const element = root.querySelector<HTMLElement>(`#${id}`);
+    if (element) element.textContent = String(value).padStart(2, "0");
+  };
+  const tick = () => {
+    const hours = Math.floor(total / 3600);
+    const minutes = Math.floor((total % 3600) / 60);
+    const seconds = total % 60;
+    setTimerText("th", hours);
+    setTimerText("tm", minutes);
+    setTimerText("ts", seconds);
+    if (total > 0) total -= 1;
+  };
+  tick();
+  const intervalId = window.setInterval(tick, 1000);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
+  );
+
+  const revealElements = Array.from(root.querySelectorAll<HTMLElement>(".r,.r-left,.r-right,.r-scale"));
+  revealElements.forEach((element) => observer.observe(element));
+
+  const faqButtons = Array.from(root.querySelectorAll<HTMLElement>(".faq-q"));
+  const onFaqClick = (event: Event) => {
+    const question = event.currentTarget as HTMLElement;
+    const item = question.parentElement;
+    if (!item) return;
+
+    const isOpen = item.classList.contains("open");
+    root.querySelectorAll<HTMLElement>(".faq-item").forEach((faqItem) => faqItem.classList.remove("open"));
+    if (!isOpen) item.classList.add("open");
+  };
+
+  faqButtons.forEach((button) => button.addEventListener("click", onFaqClick));
+
+  return () => {
+    window.clearInterval(intervalId);
+    observer.disconnect();
+    faqButtons.forEach((button) => button.removeEventListener("click", onFaqClick));
+  };
+}
