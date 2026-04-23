@@ -79,9 +79,41 @@ export function initializeAudimaxInteractions(root: ParentNode = document) {
 
   faqButtons.forEach((button) => button.addEventListener("click", onFaqClick));
 
+  const testimonialVideos = Array.from(root.querySelectorAll<HTMLVideoElement>(".testi-video video"));
+  const onVideoPlay = (event: Event) => {
+    const currentVideo = event.currentTarget as HTMLVideoElement;
+    testimonialVideos.forEach((video) => {
+      if (video !== currentVideo && !video.paused) video.pause();
+    });
+  };
+  const onVideoWrapperClick = (event: Event) => {
+    const target = event.target as HTMLElement | null;
+    const video = target?.closest(".testi-video")?.querySelector<HTMLVideoElement>("video");
+    if (!video || target?.tagName === "VIDEO") return;
+
+    testimonialVideos.forEach((item) => {
+      if (item !== video && !item.paused) item.pause();
+    });
+
+    if (video.paused) {
+      void video.play().catch(() => undefined);
+    } else {
+      video.pause();
+    }
+  };
+  testimonialVideos.forEach((video) => {
+    video.controls = true;
+    video.addEventListener("play", onVideoPlay);
+    video.closest(".testi-video")?.addEventListener("click", onVideoWrapperClick);
+  });
+
   return () => {
     window.clearInterval(intervalId);
     observer.disconnect();
     faqButtons.forEach((button) => button.removeEventListener("click", onFaqClick));
+    testimonialVideos.forEach((video) => {
+      video.removeEventListener("play", onVideoPlay);
+      video.closest(".testi-video")?.removeEventListener("click", onVideoWrapperClick);
+    });
   };
 }
