@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import audimaxProduct from "../assets/audimax-product.png";
 import { audimaxCompleteStyles, getAudimaxCompleteHtml } from "../lib/audimaxCompleteHtml";
@@ -30,17 +30,23 @@ export const Route = createFileRoute("/")({
 function Index() {
   const pageRef = useRef<HTMLDivElement>(null);
   const html = useMemo(() => getAudimaxCompleteHtml(audimaxProduct), []);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return undefined;
     if (!pageRef.current) return undefined;
 
     return initializeAudimaxInteractions(pageRef.current);
-  }, []);
+  }, [isMounted]);
 
   return (
     <>
       <style>{audimaxCompleteStyles}</style>
-      <div ref={pageRef} dangerouslySetInnerHTML={{ __html: html }} />
+      {isMounted ? <div ref={pageRef} dangerouslySetInnerHTML={{ __html: html }} /> : null}
     </>
   );
 }
