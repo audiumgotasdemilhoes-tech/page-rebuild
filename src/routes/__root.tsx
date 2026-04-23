@@ -32,11 +32,15 @@ export const Route = createRootRoute({
       { title: "Audimax Pro — Pare o Zumbido na Raiz" },
       { name: "description", content: "Protocolo líquido Audimax Pro para zumbido, tontura e clareza mental." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Audimax Pro" },
-      { property: "og:description", content: "Protocolo líquido de tripla ação para recuperar silêncio, equilíbrio e clareza." },
+      { property: "og:title", content: "Audimax Pro — Pare o Zumbido na Raiz" },
+      { property: "og:description", content: "Protocolo líquido Audimax Pro para zumbido, tontura e clareza mental." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Audimax Pro — Pare o Zumbido na Raiz" },
+      { name: "twitter:description", content: "Protocolo líquido Audimax Pro para zumbido, tontura e clareza mental." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7610dca5-9448-45b7-9fd8-7d2de950dbed/id-preview-1d122ae2--78413ac9-072f-40c9-966e-f34dd15e7b77.lovable.app-1776907216460.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7610dca5-9448-45b7-9fd8-7d2de950dbed/id-preview-1d122ae2--78413ac9-072f-40c9-966e-f34dd15e7b77.lovable.app-1776907216460.png" },
     ],
     links: [
       {
