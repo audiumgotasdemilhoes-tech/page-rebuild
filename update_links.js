@@ -1,5 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const filePath = path.join(__dirname, 'src/lib/audimaxCompleteHtml.ts');
 let content = fs.readFileSync(filePath, 'utf8');
@@ -15,13 +19,14 @@ const links = {
 // Vamos procurar todas as tags de botão de compra (btn-buy) no arquivo
 // E tentar associar ao número de frascos que aparece próximo a ele.
 
-const btnRegex = /<a\s+href="([^"]*)"\s+class="[^"]*btn-buy[^"]*"[^>]*>/g;
+const btnRegex = /<button[^>]*class="[^"]*btn-buy[^"]*"[^>]*>(.*?)<\/button>/g;
 
 let match;
 let newContent = content;
 
 // Vamos dividir o conteúdo em seções de pacotes (assumindo que a classe 'pkg' envolve cada pacote)
-const pkgs = content.split('class="pkg"');
+const pkgs = content.split('class="pkg');
+console.log('pkgs.length:', pkgs.length);
 if (pkgs.length > 1) {
   for (let i = 1; i < pkgs.length; i++) {
     let pkgHtml = pkgs[i];
@@ -31,13 +36,8 @@ if (pkgs.length > 1) {
     let frascos = frascoMatch ? frascoMatch[1] : null;
     
     if (frascos && links[frascos]) {
-      // Substituir o href no btn-buy dentro deste pacote
-      let updatedPkgHtml = pkgHtml.replace(/<a(\s+[^>]*)href="([^"]*)"([^>]*class="[^"]*btn-buy[^"]*"[^>]*)>/i, `<a$1href="${links[frascos]}"$3>`);
-      
-      // Caso a ordem das classes/atributos seja diferente
-      if (updatedPkgHtml === pkgHtml) {
-          updatedPkgHtml = pkgHtml.replace(/<a(\s+[^>]*class="[^"]*btn-buy[^"]*"[^>]*)href="([^"]*)"([^>]*)>/i, `<a$1href="${links[frascos]}"$3>`);
-      }
+      // Substituir o button btn-buy com um link
+      let updatedPkgHtml = pkgHtml.replace(/<button([^>]*)class="([^"]*btn-buy[^"]*)"([^>]*)>(.*?)<\/button>/i, `<a href="${links[frascos]}"$1class="$2"$3>$4</a>`);
       
       newContent = newContent.replace(pkgHtml, updatedPkgHtml);
       console.log(`\u2705 Link do pacote de ${frascos} frascos atualizado com sucesso!`);
