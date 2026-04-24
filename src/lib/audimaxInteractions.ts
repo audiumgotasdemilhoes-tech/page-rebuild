@@ -103,6 +103,9 @@ export function initializeAudimaxInteractions(root: ParentNode = document) {
   };
   testimonialVideos.forEach((video) => {
     video.controls = true;
+    video.setAttribute("controlsList", "nodownload noplaybackrate noremoteplayback");
+    video.setAttribute("disablePictureInPicture", "true");
+    video.addEventListener("contextmenu", (event) => event.preventDefault());
     video.addEventListener("play", onVideoPlay);
     video.closest(".testi-video")?.addEventListener("click", onVideoWrapperClick);
   });
